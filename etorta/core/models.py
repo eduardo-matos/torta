@@ -2,37 +2,25 @@ from django.db import models
 
 
 class Loja(models.Model):
-    nome = models.CharField()
-
-    class Meta:
-        db_table = 'loja'
+    nome = models.CharField(max_length=100)
 
 
 class Cliente(models.Model):
-    nome = models.CharField()
+    nome = models.CharField(max_length=100)
     loja = models.ForeignKey('Loja')
-
-    class Meta:
-        db_table = 'cliente'
 
 
 class Produto(models.Model):
-    nome = models.CharField()
-    disponibilidade = models.BooleanField()
+    nome = models.CharField(max_length=100)
+    disponibilidade = models.BooleanField(default=False)
     codigo = models.IntegerField()
-    meu_preco = models.DecimalField()
+    meu_preco = models.DecimalField(decimal_places=2, max_digits=10)
     loja = models.ForeignKey('Loja')
-
-    class Meta:
-        db_table = 'produto'
 
 
 class Url(models.Model):
-    endereco = models.CharField()
-    disponibilidade = models.BooleanField()
-    preco = models.DecimalField()
+    endereco = models.CharField(max_length=100)
+    disponibilidade = models.BooleanField(default=False)
+    preco = models.DecimalField(decimal_places=2, max_digits=10)
     loja = models.ForeignKey('Loja')
     produto = models.ForeignKey('Produto')
-
-    class Meta:
-        db_table = 'url'

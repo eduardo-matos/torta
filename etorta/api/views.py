@@ -28,7 +28,7 @@ def get(request, loja_id=0):
         for url in Url.objects.all().exclude(produto__exact=produto.pk):
             prods['urls'].append({
                 'endereco': url.endereco,
-                'preco': float(url.produto.meu_preco)
+                'preco': float(url.preco)
             })
 
         produtos.append(prods)

@@ -126,3 +126,41 @@ class TestApiAtualizar(TestCase):
     def test_status_400_quando_os_dados_nao_validam(self):
         resp = self.client.put(r('api:atualizar', args=('loja', self.loja.pk,)), urllib.urlencode({'nome': 'x' * 200}))
         self.assertEqual(400, resp.status_code)
+
+
+class TestApiRemover(TestCase):
+
+    def setUp(self):
+        self.loja = mommy.make(Loja)
+        self.produto = mommy.make(Produto)
+        self.cliente = mommy.make(Cliente)
+        self.url = mommy.make(Url)
+
+    def test_remover_models(self):
+        # remover Loja
+        resp = self.client.delete(r('api:remover', args=('loja', self.loja.pk,)))
+        self.assertEqual(200, resp.status_code)
+        self.assertRaises(Loja.objects.get, pk=self.loja.pk)
+
+        # remover Produto
+        resp = self.client.delete(r('api:remover', args=('produto', self.produto.pk,)))
+        self.assertEqual(200, resp.status_code)
+        self.assertRaises(Produto.objects.get, pk=self.produto.pk)
+
+        # remover Cliente
+        resp = self.client.delete(r('api:remover', args=('cliente', self.cliente.pk,)))
+        self.assertEqual(200, resp.status_code)
+        self.assertRaises(Cliente.objects.get, pk=self.cliente.pk)
+
+        # remover Url
+        resp = self.client.delete(r('api:remover', args=('url', self.url.pk,)))
+        self.assertEqual(200, resp.status_code)
+        self.assertRaises(Url.objects.get, pk=self.url.pk)
+
+    def test_status_404_quando_nao_encontra_model(self):
+        resp = self.client.delete(r('api:remover', args=('dummy', 1,)))
+        self.assertEqual(404, resp.status_code)
+
+    def test_status_404_quando_nao_encontra_model_no_banco_de_dados(self):
+        resp = self.client.delete(r('api:remover', args=('url', 9845,)))
+        self.assertEqual(404, resp.status_code)

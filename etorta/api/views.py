@@ -102,3 +102,23 @@ def atualizar(request, tipo, pk):
         response.status_code = 400
 
     return response
+
+
+require_http_methods(['DELETE'])
+def remover(request, tipo, pk):
+
+    if tipo == 'loja':
+        model_class = Loja
+    elif tipo == 'produto':
+        model_class = Produto
+    elif tipo == 'cliente':
+        model_class = Cliente
+    elif tipo == 'url':
+        model_class = Url
+    else:
+        raise Http404()
+
+    model_instance = get_object_or_404(model_class, pk=pk)
+    model_instance.delete()
+
+    return HttpResponse()

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from core.models import Loja, Cliente, Produto, Url
 from django.core.urlresolvers import reverse as r
+import urllib
 from model_mommy import mommy
 import json
 
@@ -80,3 +81,44 @@ class TestApiCriar(TestCase):
     def test_status_404_se_tentar_salvar_model_que_nao_existe(self):
         resp = self.client.post(r('api:criar', args=('dummy',)), {'a': 'b'})
         self.assertEqual(404, resp.status_code)
+
+
+class TestApiAtualizar(TestCase):
+
+    def setUp(self):
+        self.loja = mommy.make(Loja)
+        self.produto = mommy.make(Produto)
+        self.cliente = mommy.make(Cliente)
+        self.url = mommy.make(Url)
+
+    def test_atualizar_models(self):
+        # salvar Loja
+        resp = self.client.put(r('api:atualizar', args=('loja', self.loja.pk,)), urllib.urlencode({'nome': 'aaa'}))
+        self.assertEqual(204, resp.status_code)
+        self.assertEqual('aaa', Loja.objects.get(pk=self.loja.pk).nome)
+
+        # salvar Produto
+        resp = self.client.put(r('api:atualizar', args=('produto', self.produto.pk,)), urllib.urlencode({'nome': 'bbb', 'meu_preco': 10, 'codigo': 10}))
+        self.assertEqual(204, resp.status_code)
+        self.assertEqual('bbb', Produto.objects.get(pk=self.produto.pk).nome)
+        self.assertEqual(10, Produto.objects.get(pk=self.produto.pk).meu_preco)
+        self.assertEqual(10, Produto.objects.get(pk=self.produto.pk).codigo)
+
+        # salvar Cliente
+        resp = self.client.put(r('api:atualizar', args=('cliente', self.cliente.pk,)), urllib.urlencode({'nome': 'ccc'}))
+        self.assertEqual(204, resp.status_code)
+        self.assertEqual('ccc', Cliente.objects.get(pk=self.cliente.pk).nome)
+
+        # salvar Url
+        resp = self.client.put(r('api:atualizar', args=('url', self.url.pk,)), urllib.urlencode({'endereco': 'ccc', 'preco': 2}))
+        self.assertEqual(204, resp.status_code)
+        self.assertEqual('ccc', Url.objects.get(pk=self.url.pk).endereco)
+        self.assertEqual(2, Url.objects.get(pk=self.url.pk).preco)
+
+    def test_status_404_se_tentar_salvar_model_que_nao_existe(self):
+        resp = self.client.put(r('api:atualizar', args=('dummy', self.url.pk,)), urllib.urlencode({'endereco': 'ccc', 'preco': 2}))
+        self.assertEqual(404, resp.status_code)
+
+    def test_status_400_quando_os_dados_nao_validam(self):
+        resp = self.client.put(r('api:atualizar', args=('loja', self.loja.pk,)), urllib.urlencode({'nome': 'x' * 200}))
+        self.assertEqual(400, resp.status_code)

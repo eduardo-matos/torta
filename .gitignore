@@ -1,2 +1,7 @@
 .idea/*
-/.idea
+Thumbs.db
+.DS_Store
+*.sqlite3
+
+*.py[cod]
+pip-log.txt

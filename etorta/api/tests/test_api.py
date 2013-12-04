@@ -31,3 +31,52 @@ class TestApiGet(TestCase):
 
         resp = self.client.get(r('api:get', kwargs={'loja_id': self.minha_loja.pk}))
         self.assertTrue(len(json.loads(resp.content)['produtos'][0]['urls']) >= 1)
+
+
+class TestApiCriar(TestCase):
+
+    def test_salvar_model(self):
+        # salvar Loja
+        resp = self.client.post(r('api:criar', args=('loja',)), {'nome': 'test'})
+        self.assertEqual(201, resp.status_code)
+        self.assertTrue(Loja.objects.exists())
+
+        # salvar Produto
+        resp = self.client.post(r('api:criar', args=('produto',)), {
+            'nome': 'test',
+            'disponibilidade': True,
+            'codigo': 123,
+            'meu_preco': 10.7,
+            'loja': 1
+        })
+        self.assertEqual(201, resp.status_code)
+        self.assertTrue(Produto.objects.exists())
+
+        #salvar Cliente
+        resp = self.client.post(r('api:criar', args=('cliente',)), {
+            'nome': 'test',
+            'loja': 1
+        })
+        self.assertEqual(201, resp.status_code)
+        self.assertTrue(Cliente.objects.exists())
+
+        #salvar Url
+        resp = self.client.post(r('api:criar', args=('url',)), {
+            'endereco': '/a/b',
+            'disponibilidade': False,
+            'preco': 14.3,
+            'loja': 1,
+            'produto': 1
+        })
+        self.assertEqual(201, resp.status_code)
+        self.assertTrue(Url.objects.exists())
+
+    def test_deve_retornar_status_400_e_lista_erros_se_nao_conseguir_salvar_model(self):
+        resp = self.client.post(r('api:criar', args=('loja',)), dict())
+        self.assertEqual(400, resp.status_code)
+        self.assertTrue('nome' in json.loads(resp.content))
+        self.assertFalse(Loja.objects.exists())
+
+    def test_status_404_se_tentar_salvar_model_que_nao_existe(self):
+        resp = self.client.post(r('api:criar', args=('dummy',)), {'a': 'b'})
+        self.assertEqual(404, resp.status_code)

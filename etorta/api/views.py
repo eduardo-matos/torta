@@ -41,15 +41,9 @@ def get(request, loja_id=0):
 require_http_methods(['POST'])
 def criar(request, tipo):
 
-    if tipo == 'loja':
-        form_class = LojaForm
-    elif tipo == 'produto':
-        form_class = ProdutoForm
-    elif tipo == 'cliente':
-        form_class = ClienteForm
-    elif tipo == 'url':
-        form_class = UrlForm
-    else:
+    form_class, _ = get_model_e_form_por_tipo(tipo)
+
+    if not form_class:
         raise Http404()
 
     form = form_class(request.POST)
@@ -69,19 +63,9 @@ def criar(request, tipo):
 require_http_methods(['PUT'])
 def atualizar(request, tipo, pk):
 
-    if tipo == 'loja':
-        model_class = Loja
-        form_class = LojaForm
-    elif tipo == 'produto':
-        model_class = Produto
-        form_class = ProdutoForm
-    elif tipo == 'cliente':
-        model_class = Cliente
-        form_class = ClienteForm
-    elif tipo == 'url':
-        model_class = Url
-        form_class = UrlForm
-    else:
+    form_class, model_class = get_model_e_form_por_tipo(tipo)
+
+    if not form_class:
         raise Http404()
 
     values = dict(parse_qsl(request.body))
@@ -107,18 +91,31 @@ def atualizar(request, tipo, pk):
 require_http_methods(['DELETE'])
 def remover(request, tipo, pk):
 
-    if tipo == 'loja':
-        model_class = Loja
-    elif tipo == 'produto':
-        model_class = Produto
-    elif tipo == 'cliente':
-        model_class = Cliente
-    elif tipo == 'url':
-        model_class = Url
-    else:
+    _, model_class = get_model_e_form_por_tipo(tipo)
+
+    if not model_class:
         raise Http404()
 
     model_instance = get_object_or_404(model_class, pk=pk)
     model_instance.delete()
 
     return HttpResponse()
+
+
+def get_model_e_form_por_tipo(tipo):
+    if tipo == 'loja':
+        model_class = Loja
+        form_class = LojaForm
+    elif tipo == 'produto':
+        model_class = Produto
+        form_class = ProdutoForm
+    elif tipo == 'cliente':
+        model_class = Cliente
+        form_class = ClienteForm
+    elif tipo == 'url':
+        model_class = Url
+        form_class = UrlForm
+    else:
+        return None, None
+
+    return form_class, model_class

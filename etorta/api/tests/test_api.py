@@ -119,6 +119,10 @@ class TestApiAtualizar(TestCase):
         resp = self.client.put(r('api:atualizar', args=('dummy', self.url.pk,)), urllib.urlencode({'endereco': 'ccc', 'preco': 2}))
         self.assertEqual(404, resp.status_code)
 
+    def test_status_404_quando_tenta_atualizar_model_que_nao_existe(self):
+        resp = self.client.put(r('api:atualizar', args=('loja', 50,)), urllib.urlencode({'endereco': 'ccc', 'preco': 2}))
+        self.assertEqual(404, resp.status_code)
+
     def test_status_400_quando_os_dados_nao_validam(self):
         resp = self.client.put(r('api:atualizar', args=('loja', self.loja.pk,)), urllib.urlencode({'nome': 'x' * 200}))
         self.assertEqual(400, resp.status_code)

@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="row">
-    <h2>Criar {{ tipo|title }}</h2>
+    <h2>Atualizar {{ tipo|title }}</h2>
 
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Salvar" class="button">
+        <input type="submit" valur="Salvar" class="button">
     </form>
 </div>
 {% endblock %}

@@ -58,7 +58,6 @@ ROOT_URLCONF = 'etorta.urls'
 
 WSGI_APPLICATION = 'etorta.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
@@ -81,3 +80,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'

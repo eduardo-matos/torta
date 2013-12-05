@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django import forms
-from core.models import Loja, Produto, Cliente, Url
+from core.models import Loja, Produto, Url
 
 
 class LojaForm(forms.ModelForm):
@@ -16,13 +16,6 @@ class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
         fields = ('nome', 'disponibilidade', 'codigo', 'preco',)
-
-
-class ClienteForm(forms.ModelForm):
-
-    class Meta:
-        model = Cliente
-        fields = ('nome', 'loja',)
 
 
 class UrlForm(forms.ModelForm):

@@ -13,7 +13,7 @@
 <body>
     <header class="row">
         <a href="/"><h1 class="logo">eTorta</h1></a>
-        <nav class="navegacao-principal">
+        <nav class="navegacao-principal button-bar">
             <ul class="button-group">
                 <li><a href="{% url 'core:produtos' %}" class="button">Produtos</a></li>
                 <li>
@@ -22,11 +22,18 @@
                       <li><a href="{% url 'core:model-criar' 'produto' %}" >Produto</a></li>
                       <li><a href="{% url 'core:model-criar' 'loja' %}" >Loja</a></li>
                       <li><a href="{% url 'core:model-criar' 'url' %}" >URL</a></li>
-                      <li><a href="{% url 'core:model-criar' 'cliente' %}" >Cliente</a></li>
                     </ul>
                 </li>
             </ul>
-
+            <ul class="button-group">
+                <li class="item-login">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'core:logout' %}" class="button secondary">Logout</a>
+                    {% else %}
+                        <a href="{% url 'core:login' %}" class="button secondary">Login</a>
+                    {% endif %}
+                </li>
+            </ul>
         </nav>
     </header>
     {% block content %}{%endblock%}

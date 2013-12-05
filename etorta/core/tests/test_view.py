@@ -41,10 +41,10 @@ class TestViewAtualizaProduto(TestCase):
     def test_retorna_status_200(self):
         self.assertEqual(200, self.resp.status_code)
 
-    def test_home_exibe_lista_de_produtos(self):
+    def test_campos_do_formulario_existem(self):
         self.assertContains(self.resp, '<input ', 6)
 
-    def test_permite_salvar_produto(self):
+    def test_atualizar_produto(self):
         resp = self.client.post(r('core:produto-atualizar', kwargs={'pk': self.produto.pk,}), {'nome': 'Biscoito', 'codigo': 1, 'preco': 10})
         produto = Produto.objects.get(pk=self.produto.pk)
         self.assertEqual('Biscoito', produto.nome)

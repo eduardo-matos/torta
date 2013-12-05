@@ -1,0 +1,28 @@
+<h1>Produtos</h1>
+
+<ul class="lista-produtos">
+    {% for produto in produtos %}
+        <li>
+            <h2>Características</h2>
+            <dl class="caracteristicas-produto">
+                <dt>Nome: </dt>
+                <dd>{{ produto.nome }}</dd>
+                <dt>Disponível: </dt>
+                <dd>{{ produto.disponibilidade|yesno:"Sim,Não" }}</dd>
+                <dt>Código: </dt>
+                <dd>{{ produto.codigo }}</dd>
+                <dt>Preço: </dt>
+                <dd>{{ produto.preco }}</dd>
+            </dl>
+
+            <h2>Cadastrados nas seguintes lojas</h2>
+            <ul>
+                {% for loja in produto.loja_set.all %}
+                    <li>{{ loja }}</li>
+                {% empty %}
+                    -
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>

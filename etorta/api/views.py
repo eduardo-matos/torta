@@ -38,7 +38,7 @@ def get(request, loja_id=0):
     }))
 
 
-require_http_methods(['POST'])
+@require_http_methods(['POST'])
 def criar(request, tipo):
 
     form_class, _ = get_model_e_form_por_tipo(tipo)
@@ -60,7 +60,7 @@ def criar(request, tipo):
     return response
 
 
-require_http_methods(['PUT'])
+@require_http_methods(['PUT'])
 def atualizar(request, tipo, pk):
 
     form_class, model_class = get_model_e_form_por_tipo(tipo)
@@ -76,7 +76,7 @@ def atualizar(request, tipo, pk):
         setattr(model_instance, key, value)
 
     form = form_class(model_to_dict(model_instance))
-    
+
     response = HttpResponse()
 
     if form.is_valid():
@@ -88,7 +88,7 @@ def atualizar(request, tipo, pk):
     return response
 
 
-require_http_methods(['DELETE'])
+@require_http_methods(['DELETE'])
 def remover(request, tipo, pk):
 
     _, model_class = get_model_e_form_por_tipo(tipo)

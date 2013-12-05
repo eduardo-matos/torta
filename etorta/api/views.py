@@ -12,7 +12,6 @@ from urlparse import parse_qsl
 def get(request, loja_id=0):
 
     loja = get_object_or_404(Loja, pk=loja_id)
-    produtos = loja.produtos.all()
 
     produtos = list()
 

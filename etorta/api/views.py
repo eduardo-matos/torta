@@ -11,25 +11,25 @@ from urlparse import parse_qsl
 # Create your views here.
 def get(request, loja_id=0):
 
-    get_object_or_404(Loja, pk=loja_id)
+    loja = get_object_or_404(Loja, pk=loja_id)
+    produtos = loja.produtos.all()
 
     produtos = list()
 
-    for produto in Produto.objects.filter(loja=loja_id):
+    for produto in loja.produtos.all():
+
+        urls_deste_produto_em_outras_lojas = produto.url_set.all().exclude(loja__id=loja_id)
 
         prods = {
             'nome': produto.nome,
-            'meu_preco': float(produto.meu_preco),
+            'meu_preco': float(produto.preco),
             'disponibilidade': produto.disponibilidade,
             'codigo': produto.codigo,
-            'urls': []
-        }
-
-        for url in Url.objects.all().exclude(produto__exact=produto.pk):
-            prods['urls'].append({
+            'urls': [{
                 'endereco': url.endereco,
-                'preco': float(url.preco)
-            })
+                'preco': float(url.produto.preco)
+            } for url in urls_deste_produto_em_outras_lojas]
+        }
 
         produtos.append(prods)
 

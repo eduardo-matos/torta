@@ -20,18 +20,31 @@ class TestApiGet(TestCase):
         self.assertEqual(404, resp.status_code)
 
     def test_retorna_lista_de_produtos_de_uma_loja(self):
-        produto = mommy.make(Produto, loja = self.minha_loja, _quantity=2)
-        mommy.make(Url, _quantity=10)
+        produto1 = mommy.make(Produto)
+        produto2 = mommy.make(Produto)
+        loja1 = mommy.make(Loja)
+        loja2 = mommy.make(Loja)
 
-        resp = self.client.get(r('api:get', kwargs={'loja_id': self.minha_loja.pk}))
-        self.assertEqual(2, len(json.loads(resp.content)['produtos']))
+        url1 = mommy.make(Url, loja=loja1, produto=produto1)
+        url2 = mommy.make(Url, loja=loja1, produto=produto2)
+        url3 = mommy.make(Url, loja=loja2, produto=produto1)
+
+        resp = self.client.get(r('api:get', kwargs={'loja_id': loja2.pk}))
+        self.assertEqual(1, len(json.loads(resp.content)['produtos']))
 
     def test_retorna_informacoes_de_outras_lojas(self):
-        produto = mommy.make(Produto, loja = self.minha_loja, _quantity=2)
-        lojas = mommy.make(Url, _quantity=10)
+        produto1 = mommy.make(Produto)
+        produto2 = mommy.make(Produto)
+        loja1 = mommy.make(Loja)
+        loja2 = mommy.make(Loja)
+        loja3 = mommy.make(Loja)
 
-        resp = self.client.get(r('api:get', kwargs={'loja_id': self.minha_loja.pk}))
-        self.assertTrue(len(json.loads(resp.content)['produtos'][0]['urls']) >= 1)
+        url1 = mommy.make(Url, loja=loja1, produto=produto1)
+        url2 = mommy.make(Url, loja=loja2, produto=produto1)
+        url3 = mommy.make(Url, loja=loja3, produto=produto1)
+
+        resp = self.client.get(r('api:get', kwargs={'loja_id': loja1.pk}))
+        self.assertEqual(2, len(json.loads(resp.content)['produtos'][0]['urls']))
 
 
 class TestApiCriar(TestCase):
@@ -47,7 +60,7 @@ class TestApiCriar(TestCase):
             'nome': 'test',
             'disponibilidade': True,
             'codigo': 123,
-            'meu_preco': 10.7,
+            'preco': 10.7,
             'loja': 1
         })
         self.assertEqual(201, resp.status_code)
@@ -98,10 +111,10 @@ class TestApiAtualizar(TestCase):
         self.assertEqual('aaa', Loja.objects.get(pk=self.loja.pk).nome)
 
         # salvar Produto
-        resp = self.client.put(r('api:atualizar', args=('produto', self.produto.pk,)), urllib.urlencode({'nome': 'bbb', 'meu_preco': 10, 'codigo': 10}))
+        resp = self.client.put(r('api:atualizar', args=('produto', self.produto.pk,)), urllib.urlencode({'nome': 'bbb', 'preco': 10, 'codigo': 10}))
         self.assertEqual(204, resp.status_code)
         self.assertEqual('bbb', Produto.objects.get(pk=self.produto.pk).nome)
-        self.assertEqual(10, Produto.objects.get(pk=self.produto.pk).meu_preco)
+        self.assertEqual(10, Produto.objects.get(pk=self.produto.pk).preco)
         self.assertEqual(10, Produto.objects.get(pk=self.produto.pk).codigo)
 
         # salvar Cliente
@@ -113,7 +126,6 @@ class TestApiAtualizar(TestCase):
         resp = self.client.put(r('api:atualizar', args=('url', self.url.pk,)), urllib.urlencode({'endereco': 'ccc', 'preco': 2}))
         self.assertEqual(204, resp.status_code)
         self.assertEqual('ccc', Url.objects.get(pk=self.url.pk).endereco)
-        self.assertEqual(2, Url.objects.get(pk=self.url.pk).preco)
 
     def test_status_404_se_tentar_salvar_model_que_nao_existe(self):
         resp = self.client.put(r('api:atualizar', args=('dummy', self.url.pk,)), urllib.urlencode({'endereco': 'ccc', 'preco': 2}))

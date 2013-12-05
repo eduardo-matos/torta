@@ -2,6 +2,6 @@
 
 <form method="POST">
     {% csrf_token %}
-    <p>Tem certeza que deseja remover o produto "{{ produto }}"?</p>
+    <p>Tem certeza que deseja remover "{{ object }}"?</p>
     <input type="submit" value="Confirmar" />
 </form>

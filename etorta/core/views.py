@@ -1,8 +1,15 @@
-from django.views.generic import ListView, CreateView
+from django.http import Http404
+from django.views.generic import ListView, CreateView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView
 from .models import Produto
 from api.forms import ProdutoForm
 from django.core.urlresolvers import reverse_lazy as r
+from api.views import get_model_e_form_por_tipo
+
+
+class HomeView(TemplateView):
+    template_name = 'core/home.html'
+
 
 class ProdutosView(ListView):
     template_name = 'core/produtos.html'
@@ -10,31 +17,44 @@ class ProdutosView(ListView):
     context_object_name = 'produtos'
 
 
-class ProdutoCriarView(CreateView):
-    template_name = 'core/produtos-criar.html'
-    form_class = ProdutoForm
+class ModelCriarView(CreateView):
+    template_name = 'core/model-criar.html'
     success_url = r('core:produtos')
 
     def form_valid(self, form):
-        produto = form.save()
-        return super(ProdutoCriarView, self).form_valid(form)
+        form.save()
+        return super(ModelCriarView, self).form_valid(form)
+
+    def get_form_class(self):
+        form_class, _ = get_model_e_form_por_tipo(self.kwargs['tipo'])
+        return form_class
 
 
-class ProdutoAtualizarView(UpdateView):
-    template_name = 'core/produtos-criar.html'
-    form_class = ProdutoForm
+class ModelAtualizarView(UpdateView):
+    template_name = 'core/model-criar.html'
     success_url = r('core:produtos')
 
     def form_valid(self, form):
-        produto = form.save()
-        return super(ProdutoAtualizarView, self).form_valid(form)
+        form.save()
+        return super(ModelAtualizarView, self).form_valid(form)
 
     def get_queryset(self):
-        return Produto.objects.all().filter(pk=self.kwargs['pk'])
+        _, model_class = get_model_e_form_por_tipo(self.kwargs['tipo'])
+        return model_class.objects.all()
+
+    def get_form_class(self):
+        form_class, _ = get_model_e_form_por_tipo(self.kwargs['tipo'])
+        return form_class
 
 
-class ProdutoRemoverView(DeleteView):
-    model = Produto
-    template_name = 'core/produtos-remover.html'
+class ModelRemoverView(DeleteView):
+    template_name = 'core/model-remover.html'
     success_url = r('core:produtos')
-    context_object_name = 'produto'
+
+    def get_model(self):
+        _, model_class = get_model_e_form_por_tipo(self.kwargs['tipo'])
+        return model_class
+
+    def get_queryset(self):
+        _, model_class = get_model_e_form_por_tipo(self.kwargs['tipo'])
+        return model_class.objects.all()

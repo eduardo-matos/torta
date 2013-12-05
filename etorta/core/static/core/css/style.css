@@ -1,0 +1,27 @@
+.logo {
+    font-size: 70px;
+    line-height: 130px;
+    background: url(/static/core/img/logo.png) 200px 50% no-repeat;
+}
+
+.navegacao-principal {
+    margin: 30px 0;
+}
+
+.navegacao-principal .button {
+    margin-bottom: 0;
+}
+
+.lista-produtos {
+    list-style: none;
+    margin-left: 0;
+}
+
+.item-alteracao {
+    font-size: 14px;
+}
+
+.info-produto {
+    border-top: 1px solid #ccc;
+    background-image: linear-gradient(180deg, #f6f6f6 0%,  transparent 35%);
+}

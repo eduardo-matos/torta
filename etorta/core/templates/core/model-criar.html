@@ -1,7 +1,13 @@
-<h1>Criar</h1>
+{% extends 'core/base.html' %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" valur="Salvar">
-</form>
+{% block content %}
+<div class="row">
+    <h1>Criar</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" valur="Salvar" class="button">
+    </form>
+</div>
+{% endblock %}

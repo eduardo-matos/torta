@@ -1,4 +1,5 @@
 from django.views.generic import ListView, CreateView
+from django.views.generic.edit import UpdateView
 from .models import Produto
 from api.forms import ProdutoForm
 from django.core.urlresolvers import reverse_lazy as r
@@ -18,4 +19,15 @@ class ProdutoCriarView(CreateView):
         produto = form.save()
         return super(ProdutoCriarView, self).form_valid(form)
 
-        
+
+class ProdutoAtualizarView(UpdateView):
+    template_name = 'core/produtos-criar.html'
+    form_class = ProdutoForm
+    success_url = r('core:produtos')
+
+    def form_valid(self, form):
+        produto = form.save()
+        return super(ProdutoAtualizarView, self).form_valid(form)
+
+    def get_queryset(self):
+        return Produto.objects.all().filter(pk=self.kwargs['pk'])

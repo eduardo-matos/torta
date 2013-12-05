@@ -1,0 +1,7 @@
+<h1>Remover Produto</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <p>Tem certeza que deseja remover o produto "{{ produto }}"?</p>
+    <input type="submit" value="Confirmar" />
+</form>

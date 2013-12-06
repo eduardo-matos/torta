@@ -1,17 +1,22 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
-from core.models import Produto, Url, Loja, Cliente
+from core.models import Produto, Url, Loja
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.forms.models import model_to_dict
-from .forms import LojaForm, ProdutoForm, ClienteForm, UrlForm
+from .forms import LojaForm, ProdutoForm, UrlForm
 import json
 from urlparse import parse_qsl
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def get(request, loja_id=0):
 
     loja = get_object_or_404(Loja, pk=loja_id)
+
+    if loja.dono != request.user:
+        raise Http404()
 
     produtos = list()
 
@@ -22,7 +27,7 @@ def get(request, loja_id=0):
         prods = {
             'nome': produto.nome,
             'meu_preco': float(produto.preco),
-            'disponibilidade': produto.disponibilidade,
+            'disponibilidade': produto.url_set.filter(loja__id=loja_id).first().disponibilidade,
             'codigo': produto.codigo,
             'urls': [{
                 'endereco': url.endereco,
@@ -38,6 +43,7 @@ def get(request, loja_id=0):
 
 
 @require_http_methods(['POST'])
+@login_required
 def criar(request, tipo):
 
     form_class, _ = get_model_e_form_por_tipo(tipo)
@@ -50,7 +56,13 @@ def criar(request, tipo):
     response = HttpResponse()
 
     if form.is_valid():
-        form.save()
+        model_instance = form.save(commit=False)
+
+        # se for uma loja, assinalar ao usuario logado
+        if isinstance(model_instance, Loja):
+            model_instance.dono = request.user
+
+        model_instance.save()
         response.status_code = 201
     else:
         response.status_code = 400
@@ -108,9 +120,6 @@ def get_model_e_form_por_tipo(tipo):
     elif tipo == 'produto':
         model_class = Produto
         form_class = ProdutoForm
-    elif tipo == 'cliente':
-        model_class = Cliente
-        form_class = ClienteForm
     elif tipo == 'url':
         model_class = Url
         form_class = UrlForm

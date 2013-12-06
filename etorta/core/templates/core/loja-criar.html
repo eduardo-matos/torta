@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row">
+    <h2>Criar {{ tipo|title }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Salvar" class="button">
+    </form>
+</div>
+{% endblock %}

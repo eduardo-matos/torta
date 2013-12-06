@@ -2,12 +2,13 @@
 
 {% block content %}
 <div class="row">
-    <h1>Criar</h1>
+    <h2>Criar Produto</h2>
 
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" valur="Salvar" class="button">
+        {{ form_produto.as_p }}
+        {{ form_url.as_p }}
+        <input type="submit" value="Salvar" class="button">
     </form>
 </div>
 {% endblock %}

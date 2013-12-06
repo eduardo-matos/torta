@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row">
+    <h2>Atualizar {{ tipo|title }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" valur="Salvar" class="button">
+    </form>
+</div>
+{% endblock %}

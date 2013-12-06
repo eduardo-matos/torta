@@ -1,14 +1,14 @@
 {% extends 'core/base.html' %}
 {% block content %}
 <div class="row">
-    <h1>Produtos <span class="item-alteracao">(<a href="{% url 'core:model-criar' 'produto' %}">criar</a>)</span></h1>
+    <h2>Produtos <span class="item-alteracao">(<a href="{% url 'core:produto-criar' %}">criar</a>)</span></h2>
 
     <ul class="lista-produtos">
         {% for produto in produtos %}
             <li class="row info-produto">
-                <h2 class="large-12 column">{{ produto.nome }}</h2>
+                <h3 class="large-12 column">{{ produto.nome }} <span class="item-alteracao">(<a href="{% url 'core:model-remover' 'produto' produto.pk %}">excluir</a>)</span></h3>
                 <div class="large-6 column">
-                    <h3>Características <span class="item-alteracao">(<a href="{% url 'core:model-atualizar' 'produto' produto.pk %}">editar</a>)</span></h3>
+                    <h4>Características <span class="item-alteracao">(<a href="{% url 'core:model-atualizar' 'produto' produto.pk %}">editar</a>)</span></h4>
                     <dl class="caracteristicas-produto row">
                         <dt class="large-6 column">Disponível: </dt>
                         <dd class="large-6 column">{{ produto.disponibilidade|yesno:"Sim,Não" }}</dd>
@@ -16,11 +16,17 @@
                         <dd class="large-6 column">{{ produto.codigo }}</dd>
                         <dt class="large-6 column">Preço: </dt>
                         <dd class="large-6 column">R$ {{ produto.preco|floatformat:2 }}</dd>
+                        {% with url=produto.url_set.first %}
+                            {% if url %}
+                                <dt class="large-6 column">URL: </dt>
+                                <dd class="large-6 column">{{ url }}  <span class="item-alteracao">(<a href="{% url 'core:model-atualizar' 'url' url.pk %}">editar</a>)</span></dd>
+                            {% endif %}
+                        {% endwith %}
                     </dl>
                 </div>
 
                 <div class="large-6 column">
-                    <h3>Presente nas lojas</h3>
+                    <h4>Presente nas lojas</h4>
                     <ul>
                         {% for loja in produto.loja_set.all %}
                             <li>{{ loja }}</li>

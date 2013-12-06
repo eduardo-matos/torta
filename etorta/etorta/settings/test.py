@@ -6,6 +6,8 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '',
+        'NAME': 'testdb.sqlite3',
     }
 }
+
+SOUTH_TESTS_MIGRATE = False

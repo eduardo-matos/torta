@@ -1,7 +1,13 @@
-<h1>Remover Produto</h1>
+{% extends 'core/base.html' %}
 
-<form method="POST">
-    {% csrf_token %}
-    <p>Tem certeza que deseja remover "{{ object }}"?</p>
-    <input type="submit" value="Confirmar" />
-</form>
+{% block content %}
+<div class="row">
+    <h2>Remover {{ tipo|title }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <p>Tem certeza que deseja remover "{{ object }}"?</p>
+        <input type="submit" value="Confirmar" class="button" />
+    </form>
+</div>
+{% endblock %}

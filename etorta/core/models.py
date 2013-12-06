@@ -13,7 +13,6 @@ class Loja(models.Model):
 
 class Produto(models.Model):
     nome = models.CharField(max_length=100)
-    disponibilidade = models.BooleanField(default=False)
     codigo = models.IntegerField()
     preco = models.DecimalField(decimal_places=2, max_digits=10)
 

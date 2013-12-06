@@ -73,7 +73,6 @@ class TestApiCriar(TestCase):
         # salvar Produto
         resp = self.client.post(r('api:criar', args=('produto',)), {
             'nome': 'test',
-            'disponibilidade': True,
             'codigo': 123,
             'preco': 10.7,
             'loja': 1

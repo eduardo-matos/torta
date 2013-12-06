@@ -15,7 +15,7 @@ class ProdutoForm(forms.ModelForm):
 
     class Meta:
         model = Produto
-        fields = ('nome', 'disponibilidade', 'codigo', 'preco',)
+        fields = ('nome', 'codigo', 'preco',)
 
 
 class UrlForm(forms.ModelForm):
@@ -23,3 +23,10 @@ class UrlForm(forms.ModelForm):
     class Meta:
         model = Url
         fields = ('endereco', 'disponibilidade', 'loja', 'produto',)
+
+
+class UrlFormCriarProduto(forms.ModelForm):
+
+    class Meta:
+        model = Url
+        fields = ('endereco', 'disponibilidade', 'loja',)

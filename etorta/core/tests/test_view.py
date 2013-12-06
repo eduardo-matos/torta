@@ -21,28 +21,69 @@ class TestViewProdutos(TestCase):
         self.assertContains(self.resp, 'class="lista-produtos"')
 
 
-class TestViewCriarModel(TestCase):
+class TestViewLojaCriar(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username='edu', password='edu')
         self.client.login(username='edu', password='edu')
 
     def test_retorna_status_200(self):
-        resp = self.client.post(r('core:model-criar', kwargs={'tipo': 'loja'}))
-        self.assertEqual(200, resp.status_code)
-
-        resp = self.client.post(r('core:model-criar', kwargs={'tipo': 'produto'}))
+        resp = self.client.post(r('core:loja-criar'))
         self.assertEqual(200, resp.status_code)
 
     def test_permite_salvar_models(self):
-
         # salvar Loja
-        resp = self.client.post(r('core:model-criar', kwargs={'tipo': 'loja'}), {'nome': 'Abc'})
+        resp = self.client.post(r('core:loja-criar'), {'nome': 'Abc'})
         self.assertTrue(Loja.objects.exists())
-        
-        # salvar Produto
-        resp = self.client.post(r('core:model-criar', kwargs={'tipo': 'produto'}), {'nome': 'Biscoito', 'codigo': 1, 'preco': 10})
-        self.assertTrue(Produto.objects.exists())
+
+
+class TestViewCriarProduto(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='edu', password='edu')
+        self.client.login(username='edu', password='edu')
+
+    def test_pagina_exists(self):
+        resp = self.client.get(r('core:produto-criar'))
+        self.assertEqual(200, resp.status_code)
+
+    def test_consegue_criar_produto_com_informacoes_corretas(self):
+        loja = mommy.make(Loja, dono=self.user)
+        resp = self.client.post(r('core:produto-criar'), {
+            'produto-nome': 'abc',
+            'produto-codigo': '123',
+            'produto-preco': '10.2',
+            'url-endereco': '/a/b/c',
+            'url-disponibilidade': True,
+            'url-loja': loja.pk,
+            'url-produto': ''
+        })
+        self.assertEqual(302, resp.status_code)
+        self.assertEqual(1, loja.produtos.count())
+
+    def test_nao_consegue_salvar_produto_com_informacoes_erradas(self):
+        loja = mommy.make(Loja, dono=self.user)
+        resp = self.client.post(r('core:produto-criar'), {
+            'produto-nome': '',
+            'produto-preco': '10.2',
+            'url-endereco': '/a/b/c',
+            'url-produto': ''
+        })
+        self.assertEqual(200, resp.status_code)
+        self.assertEqual(0, loja.produtos.count())
+        self.assertContains(resp, 'error')
+
+    def test_redireciona_para_pagina_de_produtos_ao_salvar(self):
+        loja = mommy.make(Loja, dono=self.user)
+        resp = self.client.post(r('core:produto-criar'), {
+            'produto-nome': 'abc',
+            'produto-codigo': '123',
+            'produto-preco': '10.2',
+            'url-endereco': '/a/b/c',
+            'url-disponibilidade': True,
+            'url-loja': loja.pk,
+            'url-produto': ''
+        }, follow=True)
+        self.assertContains(resp, 'info-produto')
 
 
 class TestViewAtualizaModel(TestCase):
@@ -84,6 +125,14 @@ class TestViewAtualizaModel(TestCase):
         resp = self.client.post(r('core:model-atualizar', kwargs={'tipo': 'url', 'pk': self.url.pk,}), url_props)
         url = Url.objects.get(pk=self.url.pk)
         self.assertEqual('Ddd', url.endereco)
+
+    def test_status_404_se_usuario_nao_eh_dono_da_loja(self):
+        dummy_user = User.objects.create_user(username='a', password='a')
+        loja = mommy.make(Loja, dono=dummy_user)
+        loja_props = model_to_dict(loja)
+        loja_props.update({'nome': 'Aaa'})
+        resp = self.client.post(r('core:model-atualizar', kwargs={'tipo': 'loja', 'pk': loja.pk,}), loja_props)
+        self.assertEqual(404, resp.status_code)
 
 
 class TestViewRemoverModel(TestCase):

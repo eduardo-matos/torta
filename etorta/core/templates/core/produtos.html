@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 {% block content %}
 <div class="row">
-    <h2>Produtos <span class="item-alteracao">(<a href="{% url 'core:model-criar' 'produto' %}">criar</a>)</span></h2>
+    <h2>Produtos <span class="item-alteracao">(<a href="{% url 'core:produto-criar' %}">criar</a>)</span></h2>
 
     <ul class="lista-produtos">
         {% for produto in produtos %}
@@ -25,7 +25,7 @@
                         {% for loja in produto.loja_set.all %}
                             <li>{{ loja }}</li>
                         {% empty %}
-                            <p><a href="{% url 'core:model-criar' 'loja' %}">criar</a> ou <a href="{% url 'core:model-criar' 'url' %}">associar</a> à uma existente</p>
+                            -
                         {% endfor %}
                     </ul>
                 </div>

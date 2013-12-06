@@ -20,7 +20,6 @@ class Migration(SchemaMigration):
         db.create_table(u'core_produto', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('nome', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('disponibilidade', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('codigo', self.gf('django.db.models.fields.IntegerField')()),
             ('preco', self.gf('django.db.models.fields.DecimalField')(max_digits=10, decimal_places=2)),
         ))
@@ -95,7 +94,6 @@ class Migration(SchemaMigration):
         u'core.produto': {
             'Meta': {'object_name': 'Produto'},
             'codigo': ('django.db.models.fields.IntegerField', [], {}),
-            'disponibilidade': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nome': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'preco': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '2'})

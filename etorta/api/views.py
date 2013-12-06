@@ -27,7 +27,7 @@ def get(request, loja_id=0):
         prods = {
             'nome': produto.nome,
             'meu_preco': float(produto.preco),
-            'disponibilidade': produto.disponibilidade,
+            'disponibilidade': produto.url_set.filter(loja__id=loja_id).first().disponibilidade,
             'codigo': produto.codigo,
             'urls': [{
                 'endereco': url.endereco,

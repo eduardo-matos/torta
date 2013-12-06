@@ -16,6 +16,12 @@
                         <dd class="large-6 column">{{ produto.codigo }}</dd>
                         <dt class="large-6 column">Preço: </dt>
                         <dd class="large-6 column">R$ {{ produto.preco|floatformat:2 }}</dd>
+                        {% with url=produto.url_set.first %}
+                            {% if url %}
+                                <dt class="large-6 column">URL: </dt>
+                                <dd class="large-6 column">{{ url }}  <span class="item-alteracao">(<a href="{% url 'core:model-atualizar' 'url' url.pk %}">editar</a>)</span></dd>
+                            {% endif %}
+                        {% endwith %}
                     </dl>
                 </div>
 

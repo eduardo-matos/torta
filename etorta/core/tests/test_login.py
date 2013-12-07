@@ -11,6 +11,10 @@ class TestLogin(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='edu', password='edu')
 
+    def test_login_page_has_password_field(self):
+        resp = self.client.get(r('core:login'))
+        self.assertContains(resp, 'type="password"')
+
     def test_consegue_logar_com_credenciais_certas(self):
         resp = self.client.post(r('core:login'), {'username': 'edu', 'password': 'edu'})
         self.assertEqual(302, resp.status_code)

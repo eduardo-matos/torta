@@ -1,5 +1,5 @@
 # eTorta ![eTorta](http://etorta.herokuapp.com/static/core/img/logo.png)
-Aplicação que permite a comparação de preços de produtos em diferentes lojas
+[![Build Status](https://travis-ci.org/eduardo-matos/torta.png?branch=master)](https://travis-ci.org/eduardo-matos/torta) Aplicação que permite a comparação de preços de produtos em diferentes lojas
 
 ## Instalação
 

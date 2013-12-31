@@ -16,4 +16,4 @@ Para instalar as dependências no servidor remoto, basta executar o comando `pip
 É importante definir a o módulo de settings para produção `DJANGO_SETTINGS_MODULE=etorta.settings.production`
 
 ## Testes
-Rode o comando `python etorta/manage.py test --settings=etorta.settings.test`
+Navega para o diretório `etorta` e rode o comando `python manage.py test --settings=etorta.settings.test`
